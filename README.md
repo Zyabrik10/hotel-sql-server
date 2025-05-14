@@ -1,5 +1,5 @@
 **Topic:** Hotel
-**Short description:** Capsule hotel, it's a unique type of accommodation featuring mane small, bed-sized rooms so called capsules.
+**Short description:** Capsale hotel, it's a unique type of accommodation featuring mane small, bed-sized rooms so called capsules.
 
 **Memebers:** Oleksandr Mazurok, Oleksandr Katsal, Helena Parinova, Karyna Nemliienko, Anton Krykhta, Dinmukhammed Abdullayev 
 
