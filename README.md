@@ -61,12 +61,12 @@ Attribute 2 …
 4. Implementation
 DDL Statements
 (For each table, paste the DDL statement creating the table)
-'''sql
+```sql
 create table tab1 (
    a int,
    b varchar(10)
 )
-'''
+```
 Views
 (For each view, paste the SQL code defining the view along with a comment)
 
