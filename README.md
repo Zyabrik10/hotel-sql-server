@@ -61,7 +61,7 @@ Attribute 2 …
 4. Implementation
 DDL Statements
 (For each table, paste the DDL statement creating the table)
-'''
+'''sql
 create table tab1 (
    a int,
    b varchar(10)
