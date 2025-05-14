@@ -3,7 +3,8 @@
 
 **Memebers:** Oleksandr Mazurok, Oleksandr Katsal, Helena Parinova, Karyna Nemliienko, Anton Krykhta, Dinmukhammed Abdullayev 
 
---- 
+---
+
 # 1. Scope and Brief Description of the System
 The Cupsule Hotel Management System, is a database application designed to help administration to manage hotel(room reservations, room cleaning, security) 
 
