@@ -1,150 +1,76 @@
-**Temat:** Hotel
+**Topic:** Hotel
+**Short description:** Capsule hotel, it's a unique type of accommodation featuring mane small, bed-sized rooms so called capsules.
 
 **Autorzy:** Oleksandr Mazurok, Oleksandr Katsal, Helena Parinova, Karyna Nemliienko, Anton Krykhta, Dinmukhammed Abdullayev 
 
 --- 
+# 1. Scope and Brief Description of the System
+The Cupsule Hotel Management System, is a database application designed to help administration to manage hotel(room reservations, room cleaning, security) 
 
-# 1.  Zakres i krótki opis systemu
+- Client registration;
+- Possibility for a client to book a room;
+- Storage of client data (passport, PESEL(optional), phone, email);
+- A system to change the room number if a client wants to switch rooms;
+- A system that has client priority understanding (system has a list of clients where they sorted based on the time client had made a reservation, and if they don't confirm/pay for the reservation they are removed from this list and we move to the next client on th list and repeat);
 
-- Rejestracja klientów na podstawie:
-    1) numeru pokoju;
-    2) kategorii cenowej pokoju;
-- System jaki rozpoznaje czy pokój jest zajęty czy nie
-- System rejestracji klijenótw.
-- Jakie z nich są stałe, dla takich osób zniżki
-- System zmiany numeru pokoju jeżeli klient chce wymienic pokój na inny
-- System obliczenia ceny na bazie "luksusowości" pokoju. 
-- W koszt końcowy wchodzi piętro, więlkość pokoju, czy jest czy nie ma AGD.
-- Możliwość rezerwacji pokoju przez klienta.
-- System jaki pryriotyzuje klientów po czasu, w razie nie odzwonienia czy upłynął termin  rezerwacji
-- Przechowywanie danych klienta(paszport/id, pesel, numer telefonu), jego członków rodziny (jeżeli są)
-- Zakres obowiązów dla pracowników w zależności od stanowiska.
-- Możliwość dodawania dodatkowych usług za odpowiednią wpłatę.
-- Materiału zużywalne (ręczniki, mydła, minibar, pościel, worki na śmieci, szczoteczki do zębów)
-                          
-# 2.	Wymagania i funkcje systemu
+# 2. System Requirements and Functions
+## 1) Functional Requirements List
 
-## 1) Lista wymagań funkcjonalnych
+- Adding new records to the database: 
+The system must allow users to add new data to the tables (e.g., new clients, products).
 
-Wymagania funkcjonalne definiują, jakie operacje system ma wspierać. W kontekście projektu z bazą danych mogą to być takie operacje jak dodawanie, edytowanie, usuwanie danych, czy też ich wyszukiwanie. Oto przykładowa lista:
+- Editing data: 
+The system should allow editing of existing data, such as changing a client's address and so on
 
-Dodawanie nowych rekordów do bazy danych: System musi umożliwiać użytkownikom dodawanie nowych danych do tabeli (np. nowych klientów, produktów).
+- Searching for data: 
+Users should be able to search for data based on various criteria (e.g., name, phone number, registration date).
 
-Edycja danych: System powinien pozwalać na edytowanie istniejących danych, np. zmiana adresu klienta.
+- Reporting: 
+The system must be able to generate reports based on collected data (e.g., a list of all orders in a given period).
 
-Usuwanie rekordów: Użytkownicy powinni mieć możliwość usuwania danych, które nie są już potrzebne.
+- User permission management: 
+The system should allow different users to perform different actions based on assigned roles (e.g., administrator, employee).
 
-Wyszukiwanie danych: Użytkownicy powinni mieć możliwość wyszukiwania danych na podstawie różnych kryteriów (np. według imienia, numeru telefonu, daty rejestracji).
+2) User Stories
 
-Raportowanie: System musi generować raporty na podstawie zgromadzonych danych (np. lista wszystkich zamówień w danym okresie).
+As a system administrator, I want to be able to add new users to control system access.
 
-Zarządzanie uprawnieniami użytkowników: System powinien umożliwiać różnym użytkownikom wykonywanie różnych działań w zależności od przypisanych im ról (np. administrator, pracownik).
+As an employee, I want to search for clients by phone number to quickly find their contact information.
 
-## 2) Historyjki użytkownika
+As a business analyst , I want to generate sales reports to analyze business performance.
 
-Historyjki użytkownika pomagają określić, jak system ma działać z perspektywy końcowego użytkownika. Każda historyjka opisuje prostą funkcję, którą użytkownik chce mieć do dyspozycji. Przykładowe historyjki dla systemu bazodanowego mogą wyglądać tak:
+As a client, I want to edit my profile to change my contact details.
 
-Jako administrator systemu, chcę mieć możliwość dodawania nowych użytkowników, aby kontrolować dostęp do systemu.
+3. Database Design
+Database Schema
+(Diagram representing the database schema)
 
-Jako pracownik, chcę móc wyszukiwać klientów po numerze telefonu, aby szybko znaleźć ich dane kontaktowe.
+Description of Individual Tables
+(For each table, a description in tabular format)
 
-Jako menedżer, chcę móc generować raporty sprzedaży, aby analizować wyniki biznesowe.
+Table Name: (table name)
 
-Jako użytkownik, chcę mieć możliwość edytowania mojego profilu, aby poprawić moje dane kontaktowe.
-
-## 3) Przypadki użycia
-
-Przypadki użycia opisują, jak użytkownicy będą wchodzić w interakcje z systemem. Zawierają szczegóły dotyczące tego, jakie kroki musi wykonać użytkownik, aby wykonać określoną operację. Przykłady przypadków użycia:
-
-Przypadek użycia 1: Dodawanie nowego rekordu do bazy danych
-Aktorzy: Użytkownik (np. pracownik)
-
-Opis: Użytkownik chce dodać nowy rekord do bazy danych (np. nowego klienta).
-
-Prekondycje: Użytkownik jest zalogowany i ma odpowiednie uprawnienia.
-
-Kroki:
-
-Użytkownik kliknie przycisk „Dodaj nowego klienta”.
-
-System wyświetli formularz do wprowadzenia danych.
-
-Użytkownik wpisuje dane (imię, nazwisko, numer telefonu, adres).
-
-Użytkownik kliknie „Zapisz”.
-
-System zapisuje dane w bazie danych i wyświetla komunikat o pomyślnym dodaniu.
-
-Postkondycje: Nowy rekord został zapisany w bazie danych.
-
-Przypadek użycia 2: Wyszukiwanie rekordu w bazie danych
-Aktorzy: Użytkownik (np. pracownik)
-
-Opis: Użytkownik chce wyszukać dane klienta w systemie.
-
-Prekondycje: Użytkownik jest zalogowany i ma dostęp do funkcji wyszukiwania.
-
-Kroki:
-
-Użytkownik wybiera opcję wyszukiwania.
-Użytkownik wpisuje kryterium wyszukiwania (np. numer telefonu, nazwisko).
-Użytkownik kliknie „Szukaj”.
-System wyświetli wyniki pasujące do kryteriów wyszukiwania.
-Użytkonik wybiera wynik, aby wyświetlić szczegóły.
-Postkondycje: System zwróci rekordy, które pasują do zapytania użytkownika.
-
-## 4) Wymagania niefunkcjonalne
-
-Oprócz wymagań funkcjonalnych, projekt może obejmować również wymagania niefunkcjonalne, które odnoszą się do jakości systemu. Mogą to być takie wymagania jak:
-Wydajność: System powinien obsługiwać co najmniej 1000 zapytań na sekundę.
-Bezpieczeństwo: Wszystkie dane użytkowników muszą być przechowywane w sposób zaszyfrowany.
-Niezawodność: System powinien być dostępny 99% czasu, z maksymalnym czasem przestoju nieprzekraczającym 1 godziny miesięcznie.
-Skalowalność: System musi być skalowalny i obsługiwać zwiększoną liczbę użytkowników bez utraty wydajności.
-(np. lista wymagań, np. historyjki użytkownika, np. przypadki użycia itp.)
-
-# 3.	Projekt bazy danych
-
-## Schemat bazy danych
-
-(diagram (rysunek) przedstawiający schemat bazy danych) 
-
-## Opis poszczególnych tabel
-
-(Dla każdej tabeli opis w formie tabelki)
+Description: (description of the table, comments)
 
 
-Nazwa tabeli: (nazwa tabeli)
-- Opis: (opis tabeli, komentarz)
+Attribute NameTypeDescription/Remarks
+Attribute 1 …
+Attribute 2 …
 
-| Nazwa atrybutu | Typ  | Opis/Uwagi |
-|----------------|------|------------|
-| Atrybut 1 …    |      |            |
-| Atrybut 2 …    |      |            |
-
-
-# 4.	Implementacja
-
-## Kod poleceń DDL
-
-(dla każdej tabeli należy wkleić kod DDL polecenia tworzącego tabelę)
-
-```sql
+4. Implementation
+DDL Statements
+(For each table, paste the DDL statement creating the table)
+'''
 create table tab1 (
-   a int,
-   b varchar(10)
+   a int,
+   b varchar(10)
 )
-```
+'''
+Views
+(For each view, paste the SQL code defining the view along with a comment)
 
-## Widoki
+Procedures/Functions
+(For each procedure/function, paste the SQL code defining it along with a comment)
 
-(dla każdego widoku należy wkleić kod polecenia definiującego widok wraz z komentarzem)
-
-## Procedury/funkcje
-
-(dla każdej procedury/funkcji należy wkleić kod polecenia definiującego procedurę wraz z komentarzem)
-
-## Triggery
-
-(dla każdego triggera należy wkleić kod polecenia definiującego trigger wraz z komentarzem)
-
-
+Triggers
+(For each trigger, paste the SQL code defining the trigger along with a comment)
