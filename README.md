@@ -33,46 +33,10 @@ The system must be able to generate reports based on collected data (e.g., a lis
 - User permission management: 
 The system should allow different users to perform different actions based on assigned roles (e.g., administrator, employee).
 
-2) User Stories
+2) Technical Stack
+які технологіі ми використовували й т.д.
 
-As a system administrator, I want to be able to add new users to control system access.
+3) Database Design + description (опис бази, візьміть за приклад базу northwind, вона найбільше схожа на нашу ситуацію)
+-- запхайте сюда фото-карточку нашоі діаграми
 
-As an employee, I want to search for clients by phone number to quickly find their contact information.
-
-As a business analyst , I want to generate sales reports to analyze business performance.
-
-As a client, I want to edit my profile to change my contact details.
-
-3. Database Design
-Database Schema
-(Diagram representing the database schema)
-
-Description of Individual Tables
-(For each table, a description in tabular format)
-
-Table Name: (table name)
-
-Description: (description of the table, comments)
-
-
-Attribute NameTypeDescription/Remarks
-Attribute 1 …
-Attribute 2 …
-
-4. Implementation
-DDL Statements
-(For each table, paste the DDL statement creating the table)
-```sql
-create table tab1 (
-   a int,
-   b varchar(10)
-)
-```
-Views
-(For each view, paste the SQL code defining the view along with a comment)
-
-Procedures/Functions
-(For each procedure/function, paste the SQL code defining it along with a comment)
-
-Triggers
-(For each trigger, paste the SQL code defining the trigger along with a comment)
+4) Samples of queries and stuff
