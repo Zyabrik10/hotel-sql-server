@@ -16,10 +16,13 @@ The Cupsule Hotel Management System, is a database application designed to help 
 - A system that has client priority understanding (system has a list of clients where they sorted based on the time client had made a reservation, and if they don't confirm/pay for the reservation they are removed from this list and we move to the next client on th list and repeat);
 
 # 2. System Requirements and Technical stack
-## 1) Functional Requirements List
+## 1) Functional Requirements List:
 
 - Adding new records to the database: 
 The system must allow users to add new data to the tables (e.g., new clients, products).
+
+- Chec room anailability:
+The sistem automatically checks for available rooms on selected dates.
 
 - Editing data: 
 The system should allow editing of existing data, such as changing a client's address and so on
@@ -33,8 +36,19 @@ The system must be able to generate reports based on collected data (e.g., a lis
 - User permission management: 
 The system should allow different users to perform different actions based on assigned roles (e.g., administrator, employee).
 
-2) Technical Stack
-які технологіі ми використовували й т.д.
+- Notifications and warnings:
+Displey warnings if, for example, the client already has a booking or dates overlap.
+
+
+## 2) Technical Stack:
+
+- Database(DBMS): MySQL or PostgreSQL
+- Query Language: SQL
+- Database Design tools: MySQL Workbench, dbdiagram.io
+- Backend: PHP, Node.js, Python
+- User interface: HTML, CSS, JavaScript
+- Reports: HTML tabels, Excel or PDF
+- System of version control: Git, GitHub 
 
 # 3. Database Design + description (опис бази, візьміть за приклад базу northwind, вона найбільше схожа на нашу ситуацію)
 -- запхайте сюда фото-карточку нашоі діаграми
