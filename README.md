@@ -17,25 +17,25 @@ The Cupsule Hotel Management System, is a database application designed to help 
 - A system that has client priority understanding (system has a list of clients where they sorted based on the time client had made a reservation, and if they don't confirm/pay for the reservation they are removed from this list and we move to the next client on th list and repeat);
 
 # 2. System Requirements and Technical stack
-Database Management System:
--Microsoft SQL Server
+-Database Management System:
+Microsoft SQL Server
 
-Database Design Tool:
--SQL Server Management Studio 
+-Database Design Tool:
+SQL Server Management Studio 
 
-Query Language:
--Transact-SQL
+-Query Language:
+Transact-SQL
 
-Data Storage Type:
--Relational database
+-Data Storage Type:
+Relational database
 
-Core Components Used:
--Tables
--Primary & Foreign Keys
--Views 
--Stored Procedures 
--Indexes 
--Constraints 
+-Core Components Used:
+Tables
+Primary & Foreign Keys
+Views 
+Stored Procedures 
+Indexes 
+Constraints 
 
 
 ## 1) Functional Requirements List:
