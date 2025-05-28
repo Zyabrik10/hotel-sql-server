@@ -70,6 +70,75 @@ Displey warnings if, for example, the client already has a booking or dates over
 
 # 3. Database Design + description (опис бази, візьміть за приклад базу northwind, вона найбільше схожа на нашу ситуацію)
 
-## Design
+## Diagram
 
 ![db-totel-diagram](https://github.com/user-attachments/assets/1f580f38-2542-4136-87ae-1b7590bf3f02)
+
+# Database Schema Documentation
+
+## Clients
+Contains information about clients:
+- `client_id` – unique client identifier.
+- `client_name`, `surname` – first and last name.
+- `passport_id`, `pesel` – identification documents.
+- `phone`, `email` – contact information.
+
+## Reservations
+Contains data about room bookings:
+- `reservation_id` – unique reservation identifier.
+- `client_id` – relation to Clients table.
+- `room_id` – relation to Rooms table.
+- `start_date`, `end_date` – stay dates.
+
+## ReservedRoom
+Stores information about reserved rooms (multiple rooms per reservation possible):
+- `reservation_id` – relation to Reservations.
+- `room_id` – relation to Rooms.
+- `reserved_cost` – specific room cost.
+
+## Payments
+Payment information for reservations:
+- `payment_id` – unique payment identifier.
+- `reservation_id` – relation to Reservations.
+- `amount`, `payment_date`, `payment_method` – sum, date and payment method.
+
+## Rooms
+Description of hotel rooms:
+- `room_id` – room identifier.
+- `room_num` – room number (displayed to users).
+- `type_id` – relation to Types (room type).
+
+## Types
+Room types (economy, standard, luxury):
+- `type_id` – unique type identifier.
+- `title` – type name (e.g., "Deluxe").
+- `cost` – price per night.
+- `description` – additional description.
+
+## Employees
+Hotel staff:
+- `employee_id` – employee identifier.
+- `name`, `surname`, `email`, `phone` – personal data.
+- `position` – job position.
+- `department_id` – relation to Departments.
+
+## Departments
+Hotel departments:
+- `department_id` – department identifier.
+- `title` – name (e.g., "Housekeeping", "Administration").
+- `description` – description.
+
+## Cleaning_Schedule
+Room cleaning schedule:
+- `cleaning_id` – unique cleaning identifier.
+- `employee_id` – cleaning employee (relation to Employees).
+- `room_id` – room being cleaned.
+- `date` – cleaning date.
+- `cleaning_status` – status ("Pending", "Completed", "Missed", etc.).
+
+## Main Relationships:
+- `Reservations` linked with `Clients` and `Rooms`
+- `ReservedRoom` and `Payments` linked with `Reservations`
+- `Rooms` has type via `Types`
+- `Cleaning_Schedule` connects `Employees` and `Rooms`
+- `Employees` belong to `Departments`
