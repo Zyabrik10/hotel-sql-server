@@ -73,34 +73,3 @@ Displey warnings if, for example, the client already has a booking or dates over
 ## Design
 
 ![db-totel-diagram](https://github.com/user-attachments/assets/1f580f38-2542-4136-87ae-1b7590bf3f02)
-
-## System Requirements and Technical Stack
-
-1) Functional Requirements
-
-The Capsule Hotel Management System is expected to support the following core functionalities:
-- **Adding new records to the database**: The system must allow users to insert new data into relevant tables, such as adding new clients, capsules, and bookings.
-- **Checking room availability**: The system must automatically check for available capsules for a selected date range before confirming a reservation.
-- **Editing data**: Users should be able to update existing information, such as modifying client contact details or adjusting booking dates.
-- **Searching for data**: The system should support searching by various criteria (e.g., client name, passport number, phone number, booking date).
-- **Generating reports**: The system must generate reports based on stored data, such as a list of all bookings in a specific time period or capsule occupancy statistics.
-- **User role and permission management**: Different user roles (e.g., administrator, employee) should have different levels of access and control within the system.
-- **Notifications and warnings**: The system should display alerts if a client tries to book an already reserved capsule, or if booking dates overlap.
-
----
-
-2) Technical Stack
-
-The system will use the following tools and technologies:
-- **Database Management System**: Microsoft SQL Server — used for storing and managing all hotel data in a secure and structured way.
-- **Query Language**: Transact-SQL (T-SQL) — used for writing all data manipulation and retrieval queries within Microsoft SQL Server.
-- **Database Design Tool**: SQL Server Management Studio (SSMS) — the main tool used to create the schema, manage tables, and run SQL queries.
-- **Data Storage Type**: Relational Database — the data is stored in structured tables that are connected by relationships.
-- **Core Components Used**:
-    - **Tables** — store data about clients, bookings, capsules, staff, etc.
-    - **Primary & Foreign Keys** — maintain data integrity and relationships between tables.
-    - **Views** — used to simplify complex queries or generate summary reports.
-    - **Stored Procedures** — encapsulate business logic like booking confirmation or cancellation.
-    - **Indexes** — improve query performance, especially on large datasets.
-    - **Constraints** — enforce business rules, like preventing double bookings or invalid data entry.
-- **Version Control System**: Git, GitHub — used for tracking changes in database design scripts and application code, enabling team collaboration.
