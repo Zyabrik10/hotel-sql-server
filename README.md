@@ -68,7 +68,7 @@ Displey warnings if, for example, the client already has a booking or dates over
 - Database Design tools: MySQL Workbench, dbdiagram.io
 - System of version control: Git, GitHub 
 
-# 3. Database Design + description (опис бази, візьміть за приклад базу northwind, вона найбільше схожа на нашу ситуацію)
+# 3. Database Design
 
 ## Diagram
 
