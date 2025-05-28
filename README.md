@@ -31,33 +31,20 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 ## 1) Functional Requirements List:
 
-- Adding new records to the database: 
-The system must allow users to add new data to the tables (e.g., new clients, products).
-
-- Chec room anailability:
-The sistem automatically checks for available rooms on selected dates.
-
-- Editing data: 
-The system should allow editing of existing data, such as changing a client's address and so on
-
-- Searching for data: 
-Users should be able to search for data based on various criteria (e.g., name, phone number, registration date).
-
-- Reporting: 
-The system must be able to generate reports based on collected data (e.g., a list of all orders in a given period).
-
-- User permission management: 
-The system should allow different users to perform different actions based on assigned roles (e.g., administrator, employee).
-
-- Notifications and warnings:
-Displey warnings if, for example, the client already has a booking or dates overlap.
+- **Adding new records to the database**: The system must allow users to add new data to the tables (e.g., new clients, products).
+- **Chec room anailability**: The sistem automatically checks for available rooms on selected dates.
+- **Editing data**: The system should allow editing of existing data, such as changing a client's address and so on
+- **Searching for dat**a: Users should be able to search for data based on various criteria (e.g., name, phone number, registration date).
+- **Reporting**: The system must be able to generate reports based on collected data (e.g., a list of all orders in a given period).
+- **User permission management**: The system should allow different users to perform different actions based on assigned roles (e.g., administrator, employee).
+- **Notifications and warnings**: Displey warnings if, for example, the client already has a booking or dates overlap.
 
 ## 2) Technical Stack:
 
-- Database: MySQL
-- Query Language: SQL
-- Database Design tools: MySQL Workbench, dbdiagram.io
-- System of version control: Git, GitHub 
+- **Database**: MySQL
+- **Query Language**: SQL
+- **Database Design tools**: MySQL Workbench, dbdiagram.io
+- **System of version control**: Git, GitHub 
 
 # 3. Database Design
 
