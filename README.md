@@ -10,11 +10,11 @@
 
 The Cupsule Hotel Management System, is a database application designed to help administration to manage hotel(room reservations, room cleaning, security) 
 
-- Client registration;
-- Possibility for a client to book a room;
-- Storage of client data (passport, PESEL(optional), phone, email);
-- A system to change the room number if a client wants to switch rooms;
-- A system that has client priority understanding (system has a list of clients where they sorted based on the time client had made a reservation, and if they don't confirm/pay for the reservation they are removed from this list and we move to the next client on th list and repeat);
+- Client registration
+- Possibility for a client to book a room
+- Storage of client data (passport, PESEL(optional), phone, email)
+- A system to change the room number if a client wants to switch rooms
+- A system that has client priority understanding (system has a list of clients where they sorted based on the time client had made a reservation, and if they don't confirm/pay for the reservation they are removed from this list and we move to the next client on th list and repeat)
 
 # 2. System Requirements and Technical stack
 - **Database Management System**: Microsoft SQL Server
