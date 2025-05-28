@@ -97,10 +97,10 @@ The system will use the following tools and technologies:
 - **Database Design Tool**: SQL Server Management Studio (SSMS) — the main tool used to create the schema, manage tables, and run SQL queries.
 - **Data Storage Type**: Relational Database — the data is stored in structured tables that are connected by relationships.
 - **Core Components Used**:
-    - Tables — store data about clients, bookings, capsules, staff, etc.
-    - Primary & Foreign Keys — maintain data integrity and relationships between tables.
-    - Views — used to simplify complex queries or generate summary reports.
-    - Stored Procedures — encapsulate business logic like booking confirmation or cancellation.
-    - Indexes — improve query performance, especially on large datasets.
-    - Constraints — enforce business rules, like preventing double bookings or invalid data entry.
+    - **Tables** — store data about clients, bookings, capsules, staff, etc.
+    - **Primary & Foreign Keys** — maintain data integrity and relationships between tables.
+    - **Views** — used to simplify complex queries or generate summary reports.
+    - **Stored Procedures** — encapsulate business logic like booking confirmation or cancellation.
+    - **Indexes** — improve query performance, especially on large datasets.
+    - **Constraints** — enforce business rules, like preventing double bookings or invalid data entry.
 - **Version Control System**: Git, GitHub — used for tracking changes in database design scripts and application code, enabling team collaboration.
