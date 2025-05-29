@@ -28,7 +28,6 @@ The Cupsule Hotel Management System, is a database application designed to help 
   - Indexes 
   - Constraints 
 
-
 ## 1) Functional Requirements List:
 
 - **Adding new records to the database**: The system must allow users to add new data to the tables (e.g., new clients, products).
