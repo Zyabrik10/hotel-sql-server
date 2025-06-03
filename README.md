@@ -40,6 +40,57 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 ## 2) Technical Stack:
 
+- Database: MySQL
+- Query Language: SQL
+- Database Design tools: MySQL Workbench, dbdiagram.io
+- System of version control: Git, GitHub 
+
+# 3. Database Design + description (опис бази, візьміть за приклад базу northwind, вона найбільше схожа на нашу ситуацію)
+
+-- запхайте сюда фото-карточку нашоі діаграми
+
+## 1) Samples of queries and stuff
+
+1) Query: Check Room Availability
+Description: This query is used to check room availability for a given time period (check-in and check-out dates). It ensures that clients can only book rooms that are available during their selected dates.
+How it works:
+The system receives client’s selected check-in and check-out dates.
+It checks the database to ensure no existing reservation overlaps with the requested dates for a given room.
+
+
+3) Query: Update Client Contact Details
+Description: This query is used when a client changes their contact information, such as phone number or email address. The system should allow the administrator to update the client's details in the database.
+How it works:
+The admin selects a client from the database (via ID or name).
+The system allows them to edit the contact fields, such as phone number or email address.
+
+
+4) Query: Manage Reservation Queue Based on Priority
+Description: This query ensures that clients are placed in the reservation queue based on the time of booking, and if they fail to confirm or pay, they are moved to the end of the queue.
+How it works:
+The system records the time a reservation is made.
+If a client fails to confirm or pay within the set timeframe (e.g., 48 hours), their reservation is moved to the back of the queue.
+
+
+5) Query: Generate Reservation Report for a Given Period
+Description: This query allows the system to generate a report of all reservations for a specified time period (e.g., for a month or a week).
+How it works:
+The admin selects the start and end dates for the report.
+The system fetches all reservations within this period, including client details and booking status.
+ 
+6) Query: Handling Overlapping Dates for Reservations
+Description: This query checks whether the selected dates for booking overlap with any existing reservations for the same room.
+How it works:
+The system receives the room and the client's chosen check-in and check-out dates.
+It checks the database to ensure there are no existing reservations that overlap with the selected dates for the same room.
+
+
+7) Query: Update Room Status (Cleaning)
+Description: This query helps track the cleaning status of rooms. It is used by the system to mark rooms as either "clean" or "requires cleaning".
+How it works:
+After a guest checks out, the system sets the room’s status to "Requires Cleaning".
+After cleaning is completed, the status is updated to "Clean".
+
 - **Database**: MySQL
 - **Query Language**: SQL
 - **Database Design tools**: MySQL Workbench, dbdiagram.io
