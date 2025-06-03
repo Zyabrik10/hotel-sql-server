@@ -54,68 +54,78 @@ The Cupsule Hotel Management System, is a database application designed to help 
 # Database Schema Documentation
 
 ## Clients
-Contains information about clients:
-- `client_id` – unique client identifier.
-- `client_name`, `surname` – first and last name.
-- `passport_id`, `pesel` – identification documents.
-- `phone`, `email` – contact information.
+| Name    | Data type | Limits | Description |
+| -------- | ------- | -------- | ------- |
+| clients_id  | int | primary key | Unique identification of client |
+| client_name | varchar(50) | NOT NULL | Name of client | 
+| surname | varchar(50) | NOT NULL | Surname of client |
+| passport_id | varchar(8) | NOT NULL | Passport number |
+| pesel | varchar(11) | ALLOW NULL | Optional identification number |
+| phone | varchar(20) | NOT NULL | Phone number of client |
+| email | varchar(50) | NOT NULL | e-mail address of client |
 
 ## Reservations
-Contains data about room bookings:
-- `reservation_id` – unique reservation identifier.
-- `client_id` – relation to Clients table.
-- `room_id` – relation to Rooms table.
-- `start_date`, `end_date` – stay dates.
+| Name          | Data type| Limits                | Description                        |
+| --------      | -------  | --------              | -------                            |
+| reservation_id| int      | Primary key, NOT NULL |Unique identifier of the reservation|
+| client_id     | int      | NOT NULL              |Unique identifier of the client     | 
+| start_date    | date     | NOT NULL              |Start date of the reservation       | 
+| end_date      | date     | NOT NULL              |Reservation end date                |
 
 ## ReservedRoom
-Stores information about reserved rooms (multiple rooms per reservation possible):
-- `reservation_id` – relation to Reservations.
-- `room_id` – relation to Rooms.
-- `reserved_cost` – specific room cost.
+| Name          | Data type| Limits                | Description                        |
+| --------      | -------  | --------              | -------                            |
+| reservation_id| int      | Primary key, NOT NULL |Unique identifier of the reservation|
+| reserved_cost | money    | NOT NULL              |Full room reservation cost          | 
+| room_id       | date     | NOT NULL              |Unique identifier of the room       |
 
 ## Payments
-Payment information for reservations:
-- `payment_id` – unique payment identifier.
-- `reservation_id` – relation to Reservations.
-- `amount`, `payment_date`, `payment_method` – sum, date and payment method.
+| Name    | Data type | Limits | Description |
+| -------- | ------- | -------- | ------- |
+| payment_id  | int | ALLOW NULL | Unique identifier for each payment |
+| reservation_id | int | ALLOW NULL | Foreign key linking to the reservation | 
+| amount | money | ALLOW NULL | Total amount paid | 
+| payment_date | date | NOT ALLOW | Date when the payment was made |  
+| payment_method | varchar(50) | NOT ALLOW | Method of payment (e.g., Cash, Card, Online) |
 
 ## Rooms
-Description of hotel rooms:
-- `room_id` – room identifier.
-- `room_num` – room number (displayed to users).
-- `type_id` – relation to Types (room type).
+| Name    | Data type | Limits | Description |
+| -------- | ------- | -------- | ------- |
+| room_id  | int | primary key, NOT NULL | unique identifier of the room |
+| room_num | int | NOT NULL | Name of client | Room number visible to guests |
+| type_id | int | NOT NULL | Surname of client | Foreign key referencing the room type |
 
 ## Types
-Room types (economy, standard, luxury):
-- `type_id` – unique type identifier.
-- `title` – type name (e.g., "Deluxe").
-- `cost` – price per night.
-- `description` – additional description.
+| Name        | Data type   | Limits                | Description                      |
+| --------    | -------     | --------              | -------                          |
+| type_id     | int         | Primary key, NOT NULL |Unique identifier of the room type|
+| title       | varchar(50) | NOT NULL              |Room title visible to guests      | 
+| cost        | money       | NOT NULL              |Room cost visible to guests       | 
+| description | text        | ALLOW NULL            |Description of the room           |
 
 ## Employees
-Hotel staff:
-- `employee_id` – employee identifier.
-- `name`, `surname`, `email`, `phone` – personal data.
-- `position` – job position.
-- `department_id` – relation to Departments.
+| Name | Data type | Limits | Description |
+| -------- | ------- | -------- | ------- |
+| employee_id | int | PRIMARY KEY | Unique identifier of employee |
+| name | varchar(50) | NOT NULL | Name of employee |
+| surname | varchar(50) | NOT NULL | Surname of employee |
+| position | varchar(50) | NOT NULL | Position of employee |
+| department_id | int | ALLOW NULL | Unique identifier of department |
+| email | varchar(50) | ALLOW NULL | Email address of employee |
+| phone | varchar(50) | ALLOW NULL | Phone number of employee |
 
 ## Departments
-Hotel departments:
-- `department_id` – department identifier.
-- `title` – name (e.g., "Housekeeping", "Administration").
-- `description` – description.
+| Name | Data type | Limits | Description |
+| -------- | ------- | -------- | ------- |
+| department_id | int | PRIMARY KEY | Unique identifier of the department |
+| title | varchar(50) | NOT NULL | Name of the department |
+| description | text | ALLOW NULL | Optional description of the department |
 
 ## Cleaning_Schedule
-Room cleaning schedule:
-- `cleaning_id` – unique cleaning identifier.
-- `employee_id` – cleaning employee (relation to Employees).
-- `room_id` – room being cleaned.
-- `date` – cleaning date.
-- `cleaning_status` – status ("Pending", "Completed", "Missed", etc.).
-
-## Main Relationships:
-- `Reservations` linked with `Clients` and `Rooms`
-- `ReservedRoom` and `Payments` linked with `Reservations`
-- `Rooms` has type via `Types`
-- `Cleaning_Schedule` connects `Employees` and `Rooms`
-- `Employees` belong to `Departments`
+| Name    | Data type | Limits | Description |
+| -------- | ------- | -------- | ------- |
+| cleaning_id  | int | primary key |  | unique ID of the cleaning task|
+| employee_id | int | ALLOW NULL | ID of the assigned cleaning employee |
+| room_id | int | ALLOW NULL | ID of the room to be cleaned |
+| date | date | ALLOW NULL | Date of scheduled or completed cleaning |
+| cleaning_status | varchar(50) | ALLOW NULL | Status of cleaning (e.g., Scheduled, Done) |
