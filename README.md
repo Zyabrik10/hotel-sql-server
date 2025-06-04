@@ -49,7 +49,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 ## Diagram
 
-![db-totel-diagram](https://github.com/user-attachments/assets/1f580f38-2542-4136-87ae-1b7590bf3f02)
+![digram](https://github.com/user-attachments/assets/9923ac84-1218-41c8-9348-a1f4762c3a59)
 
 # Database Schema Documentation
 
