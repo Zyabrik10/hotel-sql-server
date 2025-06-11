@@ -312,19 +312,54 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
     ```sql
     CREATE OR ALTER PROCEDURE p_cancel_reservation
-        @reservation_id INT
+    @reservation_id INT
     AS
     BEGIN
+        SET NOCOUNT ON;
+    
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        
+        -- Check if reservation exists
+        IF NOT EXISTS (SELECT 1 FROM Reservations WHERE reservation_id = @reservation_id)
+        BEGIN
+            RAISERROR('Reservation with ID %d does not exist.', 16, 1, @reservation_id);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+        
+        -- First get the client_id from the reservation
+        DECLARE @client_id INT;
+        SELECT @client_id = client_id FROM Reservations WHERE reservation_id = @reservation_id;
+        
+        -- Delete payment records for this client (if they exist)
+        -- Note: This assumes payments are linked by client_id, not reservation_id
         DELETE FROM Payments
-        WHERE payment_reservation_id = @reservation_id;
-
+        WHERE client_id = @client_id;
+        
+        -- Delete reserved rooms
         DELETE FROM ReservedRoom
-        WHERE res_id = @reservation_id;
-
+        WHERE reservation_id = @reservation_id;
+        
+        -- Finally delete the reservation
         DELETE FROM Reservations
         WHERE reservation_id = @reservation_id;
+        
+        COMMIT TRANSACTION;
+        
+        PRINT 'Reservation ' + CAST(@reservation_id AS VARCHAR(10)) + ' successfully canceled.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+            
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
     END;
-    GO
     ```
 
 3. **p_register_payment**
@@ -333,17 +368,70 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
     ```sql
     CREATE OR ALTER PROCEDURE p_register_payment
-        @payment_id INT,
-        @client_id INT,
-        @amount MONEY,
-        @payment_date DATE
+    @client_id INT,
+    @amount MONEY,
+    @payment_date DATE,
+    @payment_description NVARCHAR(100) = NULL
     AS
     BEGIN
-        INSERT INTO Payments (payment_id, client_id, amount, payment_date)
-        VALUES (@payment_id, @client_id, @amount, @payment_date);
-    END;
-    GO
+        SET NOCOUNT ON;
+    
+    BEGIN TRY
+    	-- Validate client exists
+        IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
+        BEGIN
+            RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
+            RETURN;
+        END
         
+        -- Validate input parameters
+        IF @client_id IS NULL OR @amount IS NULL OR @payment_date IS NULL OR @payment_description IS NULL
+        BEGIN
+            RAISERROR('Client ID, amount, payment date and payment description cannot be NULL', 16, 1);
+            RETURN;
+        END
+        
+        IF @amount <= 0
+        BEGIN
+            RAISERROR('Payment amount must be positive', 16, 1);
+            RETURN;
+        END
+        
+        IF @payment_date < GETDATE()
+        BEGIN
+            RAISERROR('Payment date cannot be in the past', 16, 1);
+            RETURN;
+        END
+        
+        -- Get next available payment_id (max + 1)
+        DECLARE @next_payment_id INT;
+        SELECT @next_payment_id = ISNULL(MAX(payment_id), 0) + 1 FROM Payments;
+        
+        -- Insert payment record
+        INSERT INTO Payments (
+            payment_id, 
+            client_id, 
+            amount, 
+            payment_date,
+            payment_description
+        )
+        VALUES (
+            @next_payment_id,
+            @client_id,
+            @amount,
+            @payment_date,
+            @payment_description
+        );
+        
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+    END;
     ```
 
 4. **p_reassign_cleaner**
