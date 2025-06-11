@@ -536,35 +536,35 @@ The Cupsule Hotel Management System, is a database application designed to help 
     Generates a comprehensive report of a client’s activity, including reservations, room types, room numbers, and associated payments.
 
     ```sql
-CREATE OR ALTER PROCEDURE p_generate_client_report
-    @client_id INT
-AS
-BEGIN
+    CREATE OR ALTER PROCEDURE p_generate_client_report
+	@client_id INT
+     AS
+     BEGIN
 	
 	IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
-    BEGIN
-        RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
-        RETURN;
-    END
+    	BEGIN
+        	RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
+        	RETURN;
+    	END
 	
-    SELECT 
-        c.client_name, 
-        c.surname, 
-        r.reservation_id, 
-        r.start_date, 
-        r.end_date,
-        ro.room_num, 
-        t.title AS room_type, 
-        p.amount, 
-        p.payment_date AS 'reservation_payment_date'
-    FROM Clients c
-    JOIN Reservations r ON c.client_id = r.client_id 
-    LEFT JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
-    LEFT JOIN Rooms ro ON rr.room_id = ro.room_id
-    LEFT JOIN Types t ON ro.type_id = t.type_id
-    LEFT JOIN Payments p ON r.client_id = p.client_id
-    WHERE c.client_id = @client_id;
-END;
+	SELECT 
+	        c.client_name, 
+	        c.surname, 
+	        r.reservation_id, 
+	        r.start_date, 
+	        r.end_date,
+	        ro.room_num, 
+	        t.title AS room_type, 
+	        p.amount, 
+	        p.payment_date AS 'reservation_payment_date'
+	FROM Clients c
+	JOIN Reservations r ON c.client_id = r.client_id 
+	LEFT JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
+	LEFT JOIN Rooms ro ON rr.room_id = ro.room_id
+	LEFT JOIN Types t ON ro.type_id = t.type_id
+	LEFT JOIN Payments p ON r.client_id = p.client_id
+	WHERE c.client_id = @client_id;
+    END;
     ```
 
 6. **p_create_monthly_revenue_report**
