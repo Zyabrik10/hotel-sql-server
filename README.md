@@ -543,13 +543,14 @@ The Cupsule Hotel Management System, is a database application designed to help 
    ```
 
 # Functions
+
 1. **f_has_room_reservation_overlap**
 
 Returns **1** if the specified room has any overlapping reservations within a given date range; otherwise returns **0**. 
 Returns **-1** if any input is NULL, and **-2** if the start date is after the end date. Used to prevent double-booking of rooms.
 
 ```sql
-CREATE OR ALTER FUNCTION [dbo].[f_has_room_reservation_overlap](
+CREATE OR ALTER FUNCTION f_has_room_reservation_overlap(
     @room_id INT,
     @new_start DATE,
     @new_end DATE
@@ -559,15 +560,12 @@ AS
 BEGIN
     DECLARE @overlap INT = 0;
 
-    -- Проверка на NULL
     IF @room_id IS NULL OR @new_start IS NULL OR @new_end IS NULL
-        RETURN -1; -- Ошибка: недопустимые входные данные
+        RETURN -1;
 
-    -- Проверка на логическую корректность дат
     IF @new_start > @new_end
-        RETURN -2; -- Ошибка: начало позже конца
+        RETURN -2;
 
-    -- Основная логика перекрытия
     IF EXISTS (
         SELECT 1
         FROM reservations r
@@ -598,7 +596,7 @@ Total price as **DECIMAL(10,2)**
 **0.00** if no valid data is found or duration is zero.
 
 ```sql
-CREATE OR ALTER FUNCTION [dbo].[f_get_total_price_for_reservation](@reservation_id INT)
+CREATE OR ALTER FUNCTION f_get_total_price_for_reservation(@reservation_id INT)
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
@@ -642,7 +640,7 @@ Price as **DECIMAL(10,2)** if the room type exists
 **0.00** if the price is not set (NULL).
 
 ```sql
-CREATE OR ALTER FUNCTION [dbo].[f_get_room_type_price](@room_type_id INT)
+CREATE OR ALTER FUNCTION f_get_room_type_price(@room_type_id INT)
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
@@ -670,7 +668,7 @@ END;
 Returns the number of rooms that are available for booking within a given date range. A room is considered available if it has no overlapping reservations during the specified check-in and check-out period. The function performs validation on input dates and returns specific codes for incorrect input **-1** for NULL, **-2** for invalid date order.
 
 ``` sql
-CREATE OR ALTER FUNCTION [dbo].[f_get_available_rooms](@checkin DATE, @checkout DATE)
+CREATE OR ALTER FUNCTION f_get_available_rooms(@checkin DATE, @checkout DATE)
 RETURNS INT
 AS
 BEGIN
