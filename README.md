@@ -541,3 +541,162 @@ The Cupsule Hotel Management System, is a database application designed to help 
        WHERE c.client_id = @client_id;
    END;
    ```
+
+# Functions
+1. **f_has_room_reservation_overlap**
+
+Returns **1** if the specified room has any overlapping reservations within a given date range; otherwise returns **0**. 
+Returns **-1** if any input is NULL, and **-2** if the start date is after the end date. Used to prevent double-booking of rooms.
+
+```sql
+CREATE OR ALTER FUNCTION [dbo].[f_has_room_reservation_overlap](
+    @room_id INT,
+    @new_start DATE,
+    @new_end DATE
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @overlap INT = 0;
+
+    -- Проверка на NULL
+    IF @room_id IS NULL OR @new_start IS NULL OR @new_end IS NULL
+        RETURN -1; -- Ошибка: недопустимые входные данные
+
+    -- Проверка на логическую корректность дат
+    IF @new_start > @new_end
+        RETURN -2; -- Ошибка: начало позже конца
+
+    -- Основная логика перекрытия
+    IF EXISTS (
+        SELECT 1
+        FROM reservations r
+        JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
+        WHERE rr.room_id = @room_id
+          AND @new_start < r.end_date
+          AND @new_end > r.start_date
+    )
+    BEGIN
+        SET @overlap = 1;
+    END
+
+    RETURN @overlap;
+END
+```
+
+2. **f_get_total_price_for_reservation**
+
+Calculates the total price of a reservation based on the number of days between start_date and end_date and the daily cost of each reserved room.
+Returns:
+
+Total price as **DECIMAL(10,2)**
+
+**-1.00** if **reservation_id** is **NULL**
+
+**-2.00** if the reservation does not exist
+
+**0.00** if no valid data is found or duration is zero.
+
+```sql
+CREATE OR ALTER FUNCTION [dbo].[f_get_total_price_for_reservation](@reservation_id INT)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    DECLARE @total DECIMAL(10,2) = 0.00;
+
+    IF @reservation_id IS NULL
+        RETURN -1.00;
+
+    IF NOT EXISTS (SELECT 1 FROM reservations WHERE reservation_id = @reservation_id)
+        RETURN -2.00;
+
+    SELECT @total = SUM(
+        CASE 
+            WHEN r.start_date < r.end_date THEN 
+                DATEDIFF(DAY, r.start_date, r.end_date) * rr.reserved_cost_per_day
+            ELSE 0
+        END
+    )
+    FROM reservations r
+    JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
+    WHERE r.reservation_id = @reservation_id;
+
+    IF @total IS NULL
+        SET @total = 0.00;
+
+    RETURN @total;
+END
+```
+
+3. **f_get_room_type_price**
+
+Returns the daily price **(cost_per_day)** for a given room type ID from the **Types** table.
+Returns:
+
+Price as **DECIMAL(10,2)** if the room type exists
+
+**-1.00** if room_type_id is NULL
+
+**-2.00** if the specified room type does not exist
+
+**0.00** if the price is not set (NULL).
+
+```sql
+CREATE OR ALTER FUNCTION [dbo].[f_get_room_type_price](@room_type_id INT)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    DECLARE @price DECIMAL(10,2) = 0.00;
+
+    IF @room_type_id IS NULL
+        RETURN -1.00;
+
+    IF NOT EXISTS (SELECT 1 FROM Types WHERE type_id = @room_type_id)
+        RETURN -2.00;
+
+    SELECT @price = cost_per_day
+    FROM Types
+    WHERE type_id = @room_type_id;
+
+    IF @price IS NULL
+        SET @price = 0.00;
+
+    RETURN @price;
+END;
+```
+
+4. **f_get_available_rooms**
+
+Returns the number of rooms that are available for booking within a given date range. A room is considered available if it has no overlapping reservations during the specified check-in and check-out period. The function performs validation on input dates and returns specific codes for incorrect input **-1** for NULL, **-2** for invalid date order.
+
+``` sql
+CREATE OR ALTER FUNCTION [dbo].[f_get_available_rooms](@checkin DATE, @checkout DATE)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @available INT = 0;
+
+    IF @checkin IS NULL OR @checkout IS NULL
+        RETURN -1;
+
+    IF @checkin >= @checkout
+        RETURN -2;
+
+    SELECT @available = COUNT(*)
+    FROM rooms r
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM reservations res
+        JOIN ReservedRoom rr ON res.reservation_id = rr.reservation_id
+        WHERE rr.room_id = r.room_id
+          AND @checkin < res.end_date
+          AND @checkout > res.start_date
+    );
+
+    IF @available IS NULL
+        SET @available = 0;
+
+    RETURN @available;
+END;
+
+```
