@@ -301,7 +301,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 1. **p_update_cleaning_status**
 
-    Updates the cleaning status of a specific room for a given cleaning date. This procedure is typically used to mark a cleaning task as completed or update its progress.
+    Updates the cleaning status of a specific room for a given cleaning date. This procedure is used to mark a cleaning task as `done`, `undone` or `pending`.
 
     ```sql
     CREATE OR ALTER PROCEDURE p_update_cleaning_status
@@ -353,7 +353,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 2. **p_cancel_reservation**
 
-    Cancels a reservation by removing all associated entries from the Payments, ReservedRoom, and Reservations tables. Ensures that no orphan data remains.
+    Cancels a reservation by removing all related records from the Payments, ReservedRoom, and Reservations tables. Ensures that no orphan data remains.
 
     ```sql
     CREATE OR ALTER PROCEDURE p_cancel_reservation
@@ -409,7 +409,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 3. **p_register_payment**
 
-    Registers a new payment made by a client. This procedure inserts a new record into the Payments table.
+    Registers a new payment. This procedure inserts a new record into the Payments table.
 
     ```sql
     CREATE OR ALTER PROCEDURE p_register_payment
