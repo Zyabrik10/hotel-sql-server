@@ -481,7 +481,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 4. **p_reassign_cleaner**
 
-    Reassigns a cleaning task to a different employee. Updates the employee_id for a specific cleaning entry in the Cleaning_Schedule.
+    Reassigns a cleaning task to a different employee. Updates the `employee_id` for a specific cleaning task in the Cleaning_Schedule.
 
     ```sql
     CREATE OR ALTER PROCEDURE p_reassign_cleaner
@@ -533,7 +533,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 5. **p_generate_client_report**
 
-    Generates a comprehensive report of a client’s activity, including reservations, room types, room numbers, and associated payments.
+    Generates a full report of a client’s activity, including reservations, room types, room numbers, and associated payments.
 
     ```sql
     CREATE OR ALTER PROCEDURE p_generate_client_report
