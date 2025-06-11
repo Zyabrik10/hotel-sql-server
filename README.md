@@ -355,45 +355,42 @@ The Cupsule Hotel Management System, is a database application designed to help 
    @reservation_id INT
    AS
    BEGIN
-       SET NOCOUNT ON;
-
-   BEGIN TRY
-       BEGIN TRANSACTION;
-
-       IF NOT EXISTS (SELECT 1 FROM Reservations WHERE reservation_id = @reservation_id)
-       BEGIN
-           RAISERROR('Reservation with ID %d does not exist.', 16, 1, @reservation_id);
-           ROLLBACK TRANSACTION;
-           RETURN;
-       END
-
-       DECLARE @client_id INT;
-       SELECT @client_id = client_id FROM Reservations WHERE reservation_id = @reservation_id;
-
-       DELETE FROM Payments
-       WHERE client_id = @client_id;
-
-       -- Delete reserved rooms
-       DELETE FROM ReservedRoom
-       WHERE reservation_id = @reservation_id;
-
-       DELETE FROM Reservations
-       WHERE reservation_id = @reservation_id;
-
-       COMMIT TRANSACTION;
-
-       PRINT 'Reservation ' + CAST(@reservation_id AS VARCHAR(10)) + ' successfully canceled.';
-   END TRY
-   BEGIN CATCH
-       IF @@TRANCOUNT > 0
-           ROLLBACK TRANSACTION;
-
-       DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-       DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
-       DECLARE @ErrorState INT = ERROR_STATE();
-
-       RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
-   END CATCH
+       BEGIN TRY
+           BEGIN TRANSACTION;
+    
+           IF NOT EXISTS (SELECT 1 FROM Reservations WHERE reservation_id = @reservation_id)
+           BEGIN
+               RAISERROR('Reservation with ID %d does not exist.', 16, 1, @reservation_id);
+               ROLLBACK TRANSACTION;
+               RETURN;
+           END
+    
+           DECLARE @client_id INT;
+           SELECT @client_id = client_id FROM Reservations WHERE reservation_id = @reservation_id;
+    
+           DELETE FROM Payments
+           WHERE client_id = @client_id;
+    
+           DELETE FROM ReservedRoom
+           WHERE reservation_id = @reservation_id;
+    
+           DELETE FROM Reservations
+           WHERE reservation_id = @reservation_id;
+    
+           COMMIT TRANSACTION;
+    
+           PRINT 'Reservation ' + CAST(@reservation_id AS VARCHAR(10)) + ' successfully canceled.';
+       END TRY
+       BEGIN CATCH
+           IF @@TRANCOUNT > 0
+               ROLLBACK TRANSACTION;
+    
+           DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+           DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+           DECLARE @ErrorState INT = ERROR_STATE();
+    
+           RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+       END CATCH
    END;
    ```
 
