@@ -129,3 +129,299 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | room_id | int | ALLOW NULL | ID of the room to be cleaned |
 | date | date | ALLOW NULL | Date of scheduled or completed cleaning |
 | cleaning_status | varchar(50) | ALLOW NULL | Status of cleaning (e.g., Scheduled, Done) |
+
+# Views
+
+1. **vw_client_reservation_summary**
+
+    Provides a complete summary of each client's reservations, including personal details, reservation dates, assigned room number and type, reserved cost, and associated payment information. Useful for generating client activity reports, billing audits, or customer service inquiries.
+
+    ```sql
+    CREATE VIEW vw_client_reservation_summary AS
+    SELECT 
+      c.client_id,
+      c.client_name,
+      c.surname,
+      c.email,
+      r.reservation_id,
+      r.start_date,
+      r.end_date,
+      rm.room_num,
+      t.title AS room_type,
+      rr.reserved_cost,
+      p.amount AS payment_amount,
+      p.payment_date,
+      p.payment_method
+    FROM clients AS c
+    JOIN reservations AS r ON c.client_id = r.client_id
+    LEFT JOIN reservedroom AS rr ON r.reservation_id = rr.reservation_id
+    LEFT JOIN rooms AS rm ON rr.room_id = rm.room_id
+    LEFT JOIN types AS t ON rm.type_id = t.type_id
+    LEFT JOIN payments AS p ON r.reservation_id = p.reservation_id;
+    ```
+
+2. **vw_current_guests**
+
+    Lists guests who are currently staying at the hotel (based on today’s date). Helpful for reception and room service coordination.
+
+    ```sql
+    CREATE VIEW vw_current_guests AS
+    SELECT 
+      c.client_id,
+      c.client_name,
+      c.surname,
+      r.start_date,
+      r.end_date
+    FROM clients AS c
+    JOIN reservations AS r ON c.client_id = r.client_id
+    WHERE CAST(GETDATE() AS DATE) BETWEEN r.start_date AND r.end_date;
+
+    ```
+
+3. **vw_employee_task_summary**
+    
+    Displays the count of cleaning tasks assigned to each employee, grouped by cleaning status. Helps monitor staff workload and task distribution.
+
+    ```sql
+    CREATE VIEW vw_employee_task_summary AS
+    SELECT 
+      e.employee_id,
+      e.name,
+      e.surname,
+      cs.cleaning_status,
+      COUNT(*) AS task_count
+    FROM employees AS e
+    JOIN cleaning_schedule AS cs ON e.employee_id = cs.employee_id
+    GROUP BY e.employee_id, e.name, e.surname, cs.cleaning_status;
+    ```
+
+4. **vw_empty_rooms_by_type**
+
+    Shows how many rooms of each type are currently available (i.e., not reserved today). Supports real-time room availability tracking.
+
+    ```sql
+    CREATE VIEW vw_empty_rooms_by_type AS
+    SELECT 
+      t.title AS room_type,
+      COUNT(*) AS available_rooms
+    FROM rooms AS r
+    JOIN types AS t ON r.type_id = t.type_id
+    WHERE r.room_id NOT IN (
+      SELECT rr.room_id
+      FROM reservedroom AS rr
+      JOIN reservations AS res ON rr.reservation_id = res.reservation_id
+      WHERE CAST(GETDATE() AS DATE) BETWEEN res.start_date AND res.end_date
+    )
+    GROUP BY t.title;
+    ```
+
+5. **vw_frequent_clients**
+
+    Lists clients with the highest number of reservations. Useful for loyalty programs, marketing, or identifying VIP clients.
+
+    ```sql
+    CREATE VIEW vw_frequent_clients AS
+    SELECT 
+      c.client_id,
+      c.client_name,
+      c.surname,
+      COUNT(r.reservation_id) AS total_reservations
+    FROM clients AS c
+    JOIN reservations AS r ON c.client_id = r.client_id
+    GROUP BY c.client_id, c.client_name, c.surname;
+    ```
+
+6. **vw_monthly_revenue**
+
+    Summarizes total payments received per month. Helps track monthly revenue and financial performance.
+
+    ```sql
+    CREATE VIEW vw_monthly_revenue AS
+    SELECT 
+      FORMAT(p.payment_date, 'yyyy-MM') AS month,
+      SUM(p.amount) AS total_revenue
+    FROM payments AS p
+    GROUP BY FORMAT(p.payment_date, 'yyyy-MM');
+    ```
+
+7. **vw_room_availability**
+
+    Displays the current availability status ("occupied" or "available") of each room based on today’s date. It includes the room ID, room number, and room type. Useful for front desk operations, real-time room tracking, and allocation decisions.
+
+    ```sql
+    CREATE VIEW vw_room_availability AS
+    SELECT 
+        R.room_id,
+        R.room_num,
+        T.title AS room_type,
+        CASE 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM ReservedRoom RR
+                JOIN Reservations RS ON RR.reservation_id = RS.reservation_id
+                WHERE RR.room_id = R.room_id
+                  AND CAST(GETDATE() AS DATE) BETWEEN RS.start_date AND RS.end_date
+            ) 
+            THEN 'occupied'
+            ELSE 'available'
+        END AS availability
+    FROM Rooms R
+    JOIN Types T ON R.type_id = T.type_id;
+    ```
+
+8. **vw_upcoming_reservations**
+
+    Displays the current availability status ("occupied" or "available") of each room based on today’s date. It includes the room ID, room number, and room type. Useful for front desk operations, real-time room tracking, and allocation decisions.
+
+    ```sql
+    CREATE VIEW vw_upcoming_reservations AS
+    SELECT 
+      r.reservation_id,
+      c.client_name, 
+      c.surname, 
+      r.start_date, 
+      r.end_date
+    FROM reservations AS r
+    JOIN clients AS c ON r.client_id = c.client_id;
+    ```
+
+    
+# Procedures
+
+1. **p_update_cleaning_status**
+
+    Updates the cleaning status of a specific room for a given cleaning date. This procedure is typically used to mark a cleaning task as completed or update its progress.
+
+    ```sql
+    CREATE OR ALTER PROCEDURE p_update_cleaning_status
+        @room_id INT,
+        @cleaning_date DATE,
+        @new_status VARCHAR(50)
+    AS
+    BEGIN
+        UPDATE Cleaning_Schedule
+        SET cleaning_status = @new_status
+        WHERE room_id = @room_id AND due_date = @cleaning_date;
+    END;
+    GO
+    ```
+
+2. **p_cancel_reservation**
+
+    Cancels a reservation by removing all associated entries from the Payments, ReservedRoom, and Reservations tables. Ensures that no orphan data remains.
+
+    ```sql
+    CREATE OR ALTER PROCEDURE p_cancel_reservation
+        @reservation_id INT
+    AS
+    BEGIN
+        DELETE FROM Payments
+        WHERE payment_reservation_id = @reservation_id;
+
+        DELETE FROM ReservedRoom
+        WHERE res_id = @reservation_id;
+
+        DELETE FROM Reservations
+        WHERE reservation_id = @reservation_id;
+    END;
+    GO
+    ```
+
+3. **p_register_payment**
+
+    Registers a new payment made by a client. This procedure inserts a new record into the Payments table.
+
+    ```sql
+    CREATE OR ALTER PROCEDURE p_register_payment
+        @payment_id INT,
+        @client_id INT,
+        @amount MONEY,
+        @payment_date DATE
+    AS
+    BEGIN
+        INSERT INTO Payments (payment_id, client_id, amount, payment_date)
+        VALUES (@payment_id, @client_id, @amount, @payment_date);
+    END;
+    GO
+        
+    ```
+
+4. **p_reassign_cleaner**
+
+    Reassigns a cleaning task to a different employee. Updates the employee_id for a specific cleaning entry in the Cleaning_Schedule.
+
+    ```sql
+    CREATE PROCEDURE p_reassign_cleaner
+        @cleaning_id INT,
+        @new_employee_id INT
+    AS
+    BEGIN
+        UPDATE Cleaning_Schedule
+        SET employee_id = @new_employee_id
+        WHERE cleaning_id = @cleaning_id;
+    END;
+    GO
+    ```
+
+5. **p_generate_client_report**
+
+    Generates a comprehensive report of a client’s activity, including reservations, room types, room numbers, and associated payments.
+
+    ```sql
+    CREATE OR ALTER PROCEDURE p_generate_client_report
+        @client_id INT
+    AS
+    BEGIN
+        SELECT 
+            c.client_name, 
+            c.surname, 
+            r.reservation_id, 
+            r.start_date, 
+            r.end_date,
+            ro.room_num, 
+            t.title AS room_type, 
+            p.amount, 
+            p.payment_date
+        FROM Clients c
+        JOIN Reservations r ON c.client_id = r.client_id 
+        LEFT JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
+        LEFT JOIN Rooms ro ON rr.room_id = ro.room_id
+        LEFT JOIN Types t ON ro.type_id = t.type_id
+        LEFT JOIN Payments p ON r.client_id = p.client_id
+        WHERE c.client_id = @client_id;
+    END;
+    GO 
+    ```
+
+6. **p_create_monthly_revenue_report**
+
+    Calculates total monthly revenue by summing payment amounts, grouped by month. Useful for financial reporting and analysis.
+    ```sql
+    CREATE PROCEDURE p_create_monthly_revenue_report
+    AS
+    BEGIN
+        SELECT FORMAT(payment_date, 'yyyy-MM') AS Month,
+              SUM(amount) AS TotalRevenue
+        FROM Payments
+        GROUP BY FORMAT(payment_date, 'yyyy-MM')
+        ORDER BY Month DESC;
+    END;
+    GO
+    ```
+
+7. **p_batch_room_update**
+
+    Performs a bulk update on room types by changing the type_id of all rooms from one value to another. This can be used during reclassification or remodeling.
+
+    ```sql
+    CREATE PROCEDURE p_batch_room_update
+        @old_type_id INT,
+        @new_type_id INT
+    AS
+    BEGIN
+        UPDATE Rooms
+        SET type_id = @new_type_id
+        WHERE type_id = @old_type_id;
+    END;
+    GO
+    ```
