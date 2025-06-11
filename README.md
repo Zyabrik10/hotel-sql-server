@@ -484,16 +484,51 @@ The Cupsule Hotel Management System, is a database application designed to help 
     Reassigns a cleaning task to a different employee. Updates the employee_id for a specific cleaning entry in the Cleaning_Schedule.
 
     ```sql
-    CREATE PROCEDURE p_reassign_cleaner
+    CREATE OR ALTER PROCEDURE p_reassign_cleaner
         @cleaning_id INT,
         @new_employee_id INT
     AS
     BEGIN
+        BEGIN TRY
+            -- Validate cleaning task exists
+            IF NOT EXISTS (SELECT 1 FROM Cleaning_Schedule WHERE cleaning_id = @cleaning_id)
+            BEGIN
+                RAISERROR('Cleaning task with ID %d does not exist.', 16, 1, @cleaning_id);
+                RETURN;
+            END
+        
+        -- Validate new employee exists
+        IF NOT EXISTS (SELECT 1 FROM Employees WHERE employee_id = @new_employee_id)
+        BEGIN
+            RAISERROR('Employee with ID %d does not exist.', 16, 1, @new_employee_id);
+            RETURN;
+        END
+        
+        -- Check if employee is being reassigned to the same person
+        DECLARE @current_employee_id INT;
+        SELECT @current_employee_id = employee_id 
+        FROM Cleaning_Schedule 
+        WHERE cleaning_id = @cleaning_id;
+        
+        IF @current_employee_id = @new_employee_id
+        BEGIN
+            RAISERROR('Employee is already assigned to this cleaning task.', 16, 1);
+            RETURN;
+        END
+        
+        -- Perform the reassignment
         UPDATE Cleaning_Schedule
         SET employee_id = @new_employee_id
         WHERE cleaning_id = @cleaning_id;
+    END TRY
+    BEGIN CATCH
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
     END;
-    GO
     ```
 
 5. **p_generate_client_report**
