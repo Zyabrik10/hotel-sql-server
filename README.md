@@ -310,11 +310,45 @@ The Cupsule Hotel Management System, is a database application designed to help 
         @new_status VARCHAR(50)
     AS
     BEGIN
+        DECLARE @error_msg NVARCHAR(200)
+    
+    -- Check if room exists
+    IF NOT EXISTS (SELECT 1 FROM Rooms WHERE room_id = @room_id)
+    BEGIN
+        SET @error_msg = 'Room with ID ' + CAST(@room_id AS NVARCHAR(10)) + ' does not exist.'
+        RAISERROR(@error_msg, 16, 1)
+        RETURN
+    END
+    
+    -- Check if cleaning record exists for this room and date
+    IF NOT EXISTS (SELECT 1 FROM Cleaning_Schedule WHERE room_id = @room_id AND due_date = @cleaning_date)
+    BEGIN
+        SET @error_msg = 'No cleaning scheduled for room ' + CAST(@room_id AS NVARCHAR(10)) + 
+                         ' on date ' + CONVERT(NVARCHAR(10), @cleaning_date, 120) + '.'
+        RAISERROR(@error_msg, 16, 1)
+        RETURN
+    END
+    
+    -- Check if new_status is valid
+    IF @new_status NOT IN ('done', 'undone', 'pending')
+    BEGIN
+        RAISERROR('Invalid status. Allowed values are: ''done'', ''undone'', ''pending''.', 16, 1)
+        RETURN
+    END
+    
+    -- If all checks passed, perform the update
+    UPDATE Cleaning_Schedule
+    SET cleaning_status = @new_status
+    WHERE room_id = @room_id AND due_date = @cleaning_date
+    
+    -- If status is being set to 'done', update the finish_date to current date
+    IF @new_status = 'done'
+    BEGIN
         UPDATE Cleaning_Schedule
-        SET cleaning_status = @new_status
-        WHERE room_id = @room_id AND due_date = @cleaning_date;
-    END;
-    GO
+        SET finish_date = GETDATE()
+        WHERE room_id = @room_id AND due_date = @cleaning_date
+    END
+    END
     ```
 
 2. **p_cancel_reservation**
