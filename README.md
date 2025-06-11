@@ -1,3 +1,5 @@
+# Hotel
+
 Topic: Hotel
 
 Short description: Capsule hotel, it's a unique type of accommodation featuring mane small, bed-sized rooms so called capsules.
@@ -6,7 +8,7 @@ Memebers: Oleksandr Mazurok, Oleksandr Katsal, Helena Parinova, Karyna Nemliienk
 
 ---
 
-# 1. Scope and Brief Description of the System
+## 1. Scope and Brief Description of the System
 
 The Cupsule Hotel Management System, is a database application designed to help administration to manage hotel(room reservations, room cleaning, security) 
 
@@ -16,7 +18,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 - A system to change the room number if a client wants to switch rooms
 - A system that has client priority understanding (system has a list of clients where they sorted based on the time client had made a reservation, and if they don't confirm/pay for the reservation they are removed from this list and we move to the next client on th list and repeat)
 
-# 2. System Requirements and Technical stack
+## 2. System Requirements and Technical stack
 - Database Management System: Microsoft SQL Server
 - Database Design Tool: SQL Server Management Studio 
 - Query Language: Transact-SQL
@@ -28,7 +30,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
   - Indexes 
   - Constraints 
 
-## 1) Functional Requirements List:
+### Functional Requirements List:
 
 - Adding new records to the database: The system must allow users to add new data to the tables (e.g., new clients, products).
 - Chec room anailability: The sistem automatically checks for available rooms on selected dates.
@@ -38,22 +40,23 @@ The Cupsule Hotel Management System, is a database application designed to help 
 - User permission management: The system should allow different users to perform different actions based on assigned roles (e.g., administrator, employee).
 - Notifications and warnings: Displey warnings if, for example, the client already has a booking or dates overlap.
 
-## 2) Technical Stack:
+### Technical Stack:
 
 - Database: MySQL
 - Query Language: SQL
 - Database Design tools: MySQL Workbench, dbdiagram.io
 - System of version control: Git, GitHub 
 
-# 3. Database Design
+## Database Design
 
-## Diagram
+### Diagram
 
 ![digram](https://github.com/user-attachments/assets/9923ac84-1218-41c8-9348-a1f4762c3a59)
 
-# Database Schema Documentation
+### Database Schema Documentation
 
-## Clients
+#### Clients
+
 | Name    | Data type | Limits | Description |
 | -------- | ------- | -------- | ------- |
 | clients_id  | int | primary key | Unique identification of client |
@@ -64,7 +67,8 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | phone | varchar(20) | NOT NULL | Phone number of client |
 | email | varchar(50) | NOT NULL | e-mail address of client |
 
-## Reservations
+#### Reservations
+
 | Name          | Data type| Limits                | Description                        |
 | --------      | -------  | --------              | -------                            |
 | reservation_id| int      | Primary key, NOT NULL |Unique identifier of the reservation|
@@ -72,14 +76,16 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | start_date    | date     | NOT NULL              |Start date of the reservation       | 
 | end_date      | date     | NOT NULL              |Reservation end date                |
 
-## ReservedRoom
+#### ReservedRoom
+
 | Name          | Data type| Limits                | Description                        |
 | --------      | -------  | --------              | -------                            |
 | reservation_id| int      | Primary key, NOT NULL |Unique identifier of the reservation|
 | reserved_cost | money    | NOT NULL              |Full room reservation cost          | 
 | room_id       | date     | NOT NULL              |Unique identifier of the room       |
 
-## Payments
+#### Payments
+
 | Name    | Data type | Limits | Description |
 | -------- | ------- | -------- | ------- |
 | payment_id  | int | ALLOW NULL | Unique identifier for each payment |
@@ -88,14 +94,16 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | payment_date | date | NOT ALLOW | Date when the payment was made |  
 | payment_method | varchar(50) | NOT ALLOW | Method of payment (e.g., Cash, Card, Online) |
 
-## Rooms
+#### Rooms
+
 | Name    | Data type | Limits | Description |
 | -------- | ------- | -------- | ------- |
 | room_id  | int | primary key, NOT NULL | unique identifier of the room |
 | room_num | int | NOT NULL | Name of client | Room number visible to guests |
 | type_id | int | NOT NULL | Surname of client | Foreign key referencing the room type |
 
-## Types
+#### Types
+
 | Name        | Data type   | Limits                | Description                      |
 | --------    | -------     | --------              | -------                          |
 | type_id     | int         | Primary key, NOT NULL |Unique identifier of the room type|
@@ -103,7 +111,8 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | cost        | money       | NOT NULL              |Room cost visible to guests       | 
 | description | text        | ALLOW NULL            |Description of the room           |
 
-## Employees
+#### Employees
+
 | Name | Data type | Limits | Description |
 | -------- | ------- | -------- | ------- |
 | employee_id | int | PRIMARY KEY | Unique identifier of employee |
@@ -114,14 +123,16 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | email | varchar(50) | ALLOW NULL | Email address of employee |
 | phone | varchar(50) | ALLOW NULL | Phone number of employee |
 
-## Departments
+#### Departments
+
 | Name | Data type | Limits | Description |
 | -------- | ------- | -------- | ------- |
 | department_id | int | PRIMARY KEY | Unique identifier of the department |
 | title | varchar(50) | NOT NULL | Name of the department |
 | description | text | ALLOW NULL | Optional description of the department |
 
-## Cleaning_Schedule
+#### Cleaning_Schedule
+
 | Name    | Data type | Limits | Description |
 | -------- | ------- | -------- | ------- |
 | cleaning_id  | int | primary key |  | unique ID of the cleaning task|
@@ -130,7 +141,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 | date | date | ALLOW NULL | Date of scheduled or completed cleaning |
 | cleaning_status | varchar(50) | ALLOW NULL | Status of cleaning (e.g., Scheduled, Done) |
 
-# Views
+## Views
 
 1. **vw_client_reservation_summary**
 
