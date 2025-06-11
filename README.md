@@ -97,9 +97,9 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 #### Rooms
 
-| Name     | Data type | Limits                | Description                   |
+| Name     | Data type | Limits                | Description                   |                                       |
 | -------- | --------- | --------------------- | ----------------------------- | ------------------------------------- |
-| room_id  | int       | primary key, NOT NULL | unique identifier of the room |
+| room_id  | int       | primary key, NOT NULL | unique identifier of the room |                                       |
 | room_num | int       | NOT NULL              | Name of client                | Room number visible to guests         |
 | type_id  | int       | NOT NULL              | Surname of client             | Foreign key referencing the room type |
 
