@@ -310,39 +310,39 @@ The Cupsule Hotel Management System, is a database application designed to help 
        @new_status VARCHAR(50)
    AS
    BEGIN
-       DECLARE @error_msg NVARCHAR(200)
-
-   IF NOT EXISTS (SELECT 1 FROM Rooms WHERE room_id = @room_id)
-   BEGIN
-       SET @error_msg = 'Room with ID ' + CAST(@room_id AS NVARCHAR(10)) + ' does not exist.'
-       RAISERROR(@error_msg, 16, 1)
-       RETURN
-   END
-
-   IF NOT EXISTS (SELECT 1 FROM Cleaning_Schedule WHERE room_id = @room_id AND due_date = @cleaning_date)
-   BEGIN
-       SET @error_msg = 'No cleaning scheduled for room ' + CAST(@room_id AS NVARCHAR(10)) +
-                        ' on date ' + CONVERT(NVARCHAR(10), @cleaning_date, 120) + '.'
-       RAISERROR(@error_msg, 16, 1)
-       RETURN
-   END
-
-   IF @new_status NOT IN ('done', 'undone', 'pending')
-   BEGIN
-       RAISERROR('Invalid status. Allowed values are: ''done'', ''undone'', ''pending''.', 16, 1)
-       RETURN
-   END
-
-   UPDATE Cleaning_Schedule
-   SET cleaning_status = @new_status
-   WHERE room_id = @room_id AND due_date = @cleaning_date
-
-   IF @new_status = 'done'
-   BEGIN
-       UPDATE Cleaning_Schedule
-       SET finish_date = GETDATE()
-       WHERE room_id = @room_id AND due_date = @cleaning_date
-   END
+      DECLARE @error_msg NVARCHAR(200)
+  
+      IF NOT EXISTS (SELECT 1 FROM Rooms WHERE room_id = @room_id)
+      BEGIN
+          SET @error_msg = 'Room with ID ' + CAST(@room_id AS NVARCHAR(10)) + ' does not exist.'
+          RAISERROR(@error_msg, 16, 1)
+          RETURN
+      END
+  
+      IF NOT EXISTS (SELECT 1 FROM Cleaning_Schedule WHERE room_id = @room_id AND due_date = @cleaning_date)
+      BEGIN
+          SET @error_msg = 'No cleaning scheduled for room ' + CAST(@room_id AS NVARCHAR(10)) +
+                              ' on date ' + CONVERT(NVARCHAR(10), @cleaning_date, 120) + '.'
+          RAISERROR(@error_msg, 16, 1)
+          RETURN
+      END
+  
+      IF @new_status NOT IN ('done', 'undone', 'pending')
+      BEGIN
+          RAISERROR('Invalid status. Allowed values are: ''done'', ''undone'', ''pending''.', 16, 1)
+          RETURN
+      END
+  
+      UPDATE Cleaning_Schedule
+      SET cleaning_status = @new_status
+      WHERE room_id = @room_id AND due_date = @cleaning_date
+  
+      IF @new_status = 'done'
+      BEGIN
+          UPDATE Cleaning_Schedule
+          SET finish_date = GETDATE()
+          WHERE room_id = @room_id AND due_date = @cleaning_date
+      END
    END
    ```
 
@@ -406,59 +406,57 @@ The Cupsule Hotel Management System, is a database application designed to help 
    @payment_description NVARCHAR(100) = NULL
    AS
    BEGIN
-       SET NOCOUNT ON;
-
-   BEGIN TRY
-       IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
-       BEGIN
-           RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
-           RETURN;
-       END
-
-       IF @client_id IS NULL OR @amount IS NULL OR @payment_date IS NULL OR @payment_description IS NULL
-       BEGIN
-           RAISERROR('Client ID, amount, payment date and payment description cannot be NULL', 16, 1);
-           RETURN;
-       END
-
-       IF @amount <= 0
-       BEGIN
-           RAISERROR('Payment amount must be positive', 16, 1);
-           RETURN;
-       END
-
-       IF @payment_date < GETDATE()
-       BEGIN
-           RAISERROR('Payment date cannot be in the past', 16, 1);
-           RETURN;
-       END
-
-       DECLARE @next_payment_id INT;
-       SELECT @next_payment_id = ISNULL(MAX(payment_id), 0) + 1 FROM Payments;
-
-       INSERT INTO Payments (
-           payment_id,
-           client_id,
-           amount,
-           payment_date,
-           payment_description
-       )
-       VALUES (
-           @next_payment_id,
-           @client_id,
-           @amount,
-           @payment_date,
-           @payment_description
-       );
-
-   END TRY
-   BEGIN CATCH
-       DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-       DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
-       DECLARE @ErrorState INT = ERROR_STATE();
-
-       RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
-   END CATCH
+      BEGIN TRY
+          IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
+          BEGIN
+              RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
+              RETURN;
+          END
+  
+          IF @client_id IS NULL OR @amount IS NULL OR @payment_date IS NULL OR @payment_description IS NULL
+          BEGIN
+              RAISERROR('Client ID, amount, payment date and payment description cannot be NULL', 16, 1);
+              RETURN;
+          END
+  
+          IF @amount <= 0
+          BEGIN
+              RAISERROR('Payment amount must be positive', 16, 1);
+              RETURN;
+          END
+  
+          IF @payment_date < GETDATE()
+          BEGIN
+              RAISERROR('Payment date cannot be in the past', 16, 1);
+              RETURN;
+          END
+  
+          DECLARE @next_payment_id INT;
+          SELECT @next_payment_id = ISNULL(MAX(payment_id), 0) + 1 FROM Payments;
+  
+          INSERT INTO Payments (
+              payment_id,
+              client_id,
+              amount,
+              payment_date,
+              payment_description
+          )
+          VALUES (
+              @next_payment_id,
+              @client_id,
+              @amount,
+              @payment_date,
+              @payment_description
+          );
+  
+      END TRY
+      BEGIN CATCH
+          DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+          DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+          DECLARE @ErrorState INT = ERROR_STATE();
+  
+          RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+      END CATCH
    END;
    ```
 
@@ -472,41 +470,41 @@ The Cupsule Hotel Management System, is a database application designed to help 
        @new_employee_id INT
    AS
    BEGIN
-       BEGIN TRY
-           IF NOT EXISTS (SELECT 1 FROM Cleaning_Schedule WHERE cleaning_id = @cleaning_id)
-           BEGIN
-               RAISERROR('Cleaning task with ID %d does not exist.', 16, 1, @cleaning_id);
-               RETURN;
-           END
-
-       IF NOT EXISTS (SELECT 1 FROM Employees WHERE employee_id = @new_employee_id)
-       BEGIN
-           RAISERROR('Employee with ID %d does not exist.', 16, 1, @new_employee_id);
-           RETURN;
-       END
-
-       DECLARE @current_employee_id INT;
-       SELECT @current_employee_id = employee_id
-       FROM Cleaning_Schedule
-       WHERE cleaning_id = @cleaning_id;
-
-       IF @current_employee_id = @new_employee_id
-       BEGIN
-           RAISERROR('Employee is already assigned to this cleaning task.', 16, 1);
-           RETURN;
-       END
-
-       UPDATE Cleaning_Schedule
-       SET employee_id = @new_employee_id
-       WHERE cleaning_id = @cleaning_id;
-   END TRY
-   BEGIN CATCH
-       DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-       DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
-       DECLARE @ErrorState INT = ERROR_STATE();
-
-       RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
-   END CATCH
+      BEGIN TRY
+              IF NOT EXISTS (SELECT 1 FROM Cleaning_Schedule WHERE cleaning_id = @cleaning_id)
+              BEGIN
+                  RAISERROR('Cleaning task with ID %d does not exist.', 16, 1, @cleaning_id);
+                  RETURN;
+              END
+  
+          IF NOT EXISTS (SELECT 1 FROM Employees WHERE employee_id = @new_employee_id)
+          BEGIN
+              RAISERROR('Employee with ID %d does not exist.', 16, 1, @new_employee_id);
+              RETURN;
+          END
+  
+          DECLARE @current_employee_id INT;
+          SELECT @current_employee_id = employee_id
+          FROM Cleaning_Schedule
+          WHERE cleaning_id = @cleaning_id;
+  
+          IF @current_employee_id = @new_employee_id
+          BEGIN
+              RAISERROR('Employee is already assigned to this cleaning task.', 16, 1);
+              RETURN;
+          END
+  
+          UPDATE Cleaning_Schedule
+          SET employee_id = @new_employee_id
+          WHERE cleaning_id = @cleaning_id;
+      END TRY
+      BEGIN CATCH
+          DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+          DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+          DECLARE @ErrorState INT = ERROR_STATE();
+  
+          RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+      END CATCH
    END;
    ```
 
@@ -519,29 +517,27 @@ The Cupsule Hotel Management System, is a database application designed to help 
    @client_id INT
     AS
     BEGIN
-
-   IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
-   	BEGIN
-       	RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
-       	RETURN;
-   	END
-
-   SELECT
-           c.client_name,
-           c.surname,
-           r.reservation_id,
-           r.start_date,
-           r.end_date,
-           ro.room_num,
-           t.title AS room_type,
-           p.amount,
-           p.payment_date AS 'reservation_payment_date'
-   FROM Clients c
-   JOIN Reservations r ON c.client_id = r.client_id
-   LEFT JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
-   LEFT JOIN Rooms ro ON rr.room_id = ro.room_id
-   LEFT JOIN Types t ON ro.type_id = t.type_id
-   LEFT JOIN Payments p ON r.client_id = p.client_id
-   WHERE c.client_id = @client_id;
+       IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
+       	BEGIN
+           	RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
+           	RETURN;
+       	END
+    
+       SELECT  c.client_name,
+               c.surname,
+               r.reservation_id,
+               r.start_date,
+               r.end_date,
+               ro.room_num,
+               t.title AS room_type,
+               p.amount,
+               p.payment_date AS 'reservation_payment_date'
+       FROM Clients c
+       JOIN Reservations r ON c.client_id = r.client_id
+       LEFT JOIN ReservedRoom rr ON r.reservation_id = rr.reservation_id
+       LEFT JOIN Rooms ro ON rr.room_id = ro.room_id
+       LEFT JOIN Types t ON ro.type_id = t.type_id
+       LEFT JOIN Payments p ON r.client_id = p.client_id
+       WHERE c.client_id = @client_id;
    END;
    ```
