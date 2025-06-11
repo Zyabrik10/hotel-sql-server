@@ -566,36 +566,3 @@ The Cupsule Hotel Management System, is a database application designed to help 
 	WHERE c.client_id = @client_id;
     END;
     ```
-
-6. **p_create_monthly_revenue_report**
-
-    Calculates total monthly revenue by summing payment amounts, grouped by month. Useful for financial reporting and analysis.
-    ```sql
-    CREATE PROCEDURE p_create_monthly_revenue_report
-    AS
-    BEGIN
-        SELECT FORMAT(payment_date, 'yyyy-MM') AS Month,
-              SUM(amount) AS TotalRevenue
-        FROM Payments
-        GROUP BY FORMAT(payment_date, 'yyyy-MM')
-        ORDER BY Month DESC;
-    END;
-    GO
-    ```
-
-7. **p_batch_room_update**
-
-    Performs a bulk update on room types by changing the type_id of all rooms from one value to another. This can be used during reclassification or remodeling.
-
-    ```sql
-    CREATE PROCEDURE p_batch_room_update
-        @old_type_id INT,
-        @new_type_id INT
-    AS
-    BEGIN
-        UPDATE Rooms
-        SET type_id = @new_type_id
-        WHERE type_id = @old_type_id;
-    END;
-    GO
-    ```
