@@ -533,7 +533,7 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 5. **p_generate_client_report**
 
-    Generates a full report of a client’s activity, including reservations, room types, room numbers, and associated payments.
+    Generates a full report of a client’s activity, including reservations, room types, room numbers, and reservation payment.
 
     ```sql
     CREATE OR ALTER PROCEDURE p_generate_client_report
