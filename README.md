@@ -97,11 +97,11 @@ The Cupsule Hotel Management System, is a database application designed to help 
 
 #### Rooms
 
-| Name     | Data type | Limits                | Description                   |                                       |
-| -------- | --------- | --------------------- | ----------------------------- | ------------------------------------- |
-| room_id  | int       | primary key, NOT NULL | unique identifier of the room |                                       |
-| room_num | int       | NOT NULL              | Name of client                | Room number visible to guests         |
-| type_id  | int       | NOT NULL              | Surname of client             | Foreign key referencing the room type |
+| Name     | Data type | Limits                | Description                   |
+| -------- | --------- | --------------------- | ----------------------------- |
+| room_id  | int       | primary key, NOT NULL | unique identifier of the room |
+| room_num | int       | NOT NULL              | Room number visible to guests |
+| type_id  | int       | NOT NULL              | Foreign key referencing the room type |
 
 #### Types
 
@@ -135,8 +135,8 @@ The Cupsule Hotel Management System, is a database application designed to help 
 #### Cleaning_Schedule
 
 | Name            | Data type   | Limits      | Description                                |
-| --------------- | ----------- | ----------- | ------------------------------------------ | ------------------------------ |
-| cleaning_id     | int         | primary key |                                            | unique ID of the cleaning task |
+| --------------- | ----------- | ----------- | ------------------------------------------ |
+| cleaning_id     | int         | primary key | unique ID of the cleaning task             |
 | employee_id     | int         | ALLOW NULL  | ID of the assigned cleaning employee       |
 | room_id         | int         | ALLOW NULL  | ID of the room to be cleaned               |
 | date            | date        | ALLOW NULL  | Date of scheduled or completed cleaning    |
