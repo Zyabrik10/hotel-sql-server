@@ -518,10 +518,10 @@ The Cupsule Hotel Management System, is a database application designed to help 
     AS
     BEGIN
        IF NOT EXISTS (SELECT 1 FROM Clients WHERE client_id = @client_id)
-       	BEGIN
+       BEGIN
            RAISERROR('Client with ID %d does not exist.', 16, 1, @client_id);
            RETURN;
-       	END
+       END
     
        SELECT  c.client_name,
                c.surname,
